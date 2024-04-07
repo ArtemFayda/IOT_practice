@@ -4,7 +4,6 @@ import matplotlib as mpl
 
 import warnings
 from scipy.optimize import minimize
-mpl.style.use('seaborn-white')
 warnings.filterwarnings('ignore')
 dx = 0.001
 x = np.arange(-10, 10, dx)
