@@ -1,54 +1,55 @@
 import tkinter as tk
 
-
-class InterestCalculator:
+class MainWindow(tk.Frame):
     def __init__(self, parent):
+        super(MainWindow, self).__init__(parent)
         self.parent = parent
+        self.grid(row=0, column=0)
+
+
         self.principal = tk.DoubleVar()
         self.rate = tk.DoubleVar()
         self.years = tk.IntVar()
-        self.amount = tk.DoubleVar()
+        self.amount = tk.StringVar()
 
-        principal_label = tk.Label(parent, text="Principal:")
-        principal_label.pack()
-        principal_entry = tk.Entry(parent, textvariable=self.principal)
-        principal_entry.pack()
+        principalLabel = tk.Label(self, text="Principal:")
+        principalLabel.grid(row=0, column=0, sticky=tk.W)
+        self.principalScale = tk.Scale(self, from_=0, to=10000, resolution=0.01, orient=tk.HORIZONTAL, variable=self.principal, command=self.updateUi)
+        self.principalScale.grid(row=0, column=1)
 
-        rate_label = tk.Label(parent, text="Rate:")
-        rate_label.pack()
-        rate_entry = tk.Entry(parent, textvariable=self.rate)
-        rate_entry.pack()
+        rateLabel = tk.Label(self, text="Rate (%):")
+        rateLabel.grid(row=1, column=0, sticky=tk.W)
+        self.rateScale = tk.Scale(self, from_=0, to=100, resolution=0.01, orient=tk.HORIZONTAL, variable=self.rate, command=self.updateUi)
+        self.rateScale.grid(row=1, column=1)
 
-        years_label = tk.Label(parent, text="Years:")
-        years_label.pack()
-        years_entry = tk.Entry(parent, textvariable=self.years)
-        years_entry.pack()
+        yearsLabel = tk.Label(self, text="Years:")
+        yearsLabel.grid(row=2, column=0, sticky=tk.W)
+        self.yearsScale = tk.Scale(self, from_=0, to=50, orient=tk.HORIZONTAL, variable=self.years, command=self.updateUi)
+        self.yearsScale.grid(row=2, column=1)
 
-        calculate_button = tk.Button(parent, text="Calculate", command=self.updateUi)
-        calculate_button.pack()
+        amountLabel = tk.Label(self, text="Amount:")
+        amountLabel.grid(row=3, column=0, sticky=tk.W)
+        self.actualAmountLabel = tk.Label(self, textvariable=self.amount, relief=tk.SUNKEN, anchor=tk.E)
+        self.actualAmountLabel.grid(row=3, column=1, sticky=tk.W+tk.E)
 
-        amount_label = tk.Label(parent, text="Amount:")
-        amount_label.pack()
-        amount_display = tk.Label(parent, textvariable=self.amount)
-        amount_display.pack()
+        self.updateUi()
+        self.parent.bind("<Escape>", self.quit)
 
-    def updateUi(self):
+    def updateUi(self, *ignore):
         p = self.principal.get()
         r = self.rate.get()
         y = self.years.get()
-        amount = round(p * (1 + r / 100) ** y, 2)
-        self.amount.set(amount)
+        amount = round(p * (1 + r/100)**y, 2)
+        self.amount.set(f"${amount}")
 
-        popup = tk.Toplevel(self.parent)
-        popup.title("Success Message")
-        popup.geometry("250x100+200+200")
-
-        success_label = tk.Label(popup, text="Расчет выполнин!")
-        success_label.pack()
+    def quit(self, event=None):
+        self.parent.destroy()
+root = tk.Tk()
+root.title("Integerst")
 
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    root.title("Interest Calculator")
-    calculator = InterestCalculator(root)
-    root.mainloop()
+main_window = MainWindow(root)
+
+
+
+root.mainloop()
